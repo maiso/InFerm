@@ -33,7 +33,7 @@ sudo apt install   gdb-multiarch   openocd
 
 In a terminal run the following command:
 ```console
-openocd -f openocd.cfg
+openocd -f openocd-samd21.cfg
 ```
 This should have a output similar to this:
 ```console
