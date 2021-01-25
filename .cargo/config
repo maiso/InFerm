@@ -4,7 +4,6 @@
 target = "thumbv6m-none-eabi"
 
 [target.thumbv6m-none-eabi]
-#runner = 'arm-none-eabi-gdb'
 runner = "gdb-multiarch -q -x openocd.gdb"
 rustflags = [
 

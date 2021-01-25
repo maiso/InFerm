@@ -1,6 +1,16 @@
 # InFerm
 In the Fermenter, this code goes. This purpose of this project is to have a SG meter.
 
+# Prerequisits
+The rust target thumbv6m-none-eabi needs to be installed:
+```console
+rustup target add thumbv6m-none-eabi
+```
+Install the arm-none-eabi tools:
+```console
+sudo apt install binutils-arm-none-eabi
+```
+
 # Compiling
 ```console
 cargo build
@@ -15,6 +25,12 @@ arm-none-eabi-objcopy -O binary target/thumbv6m-none-eabi/release/in_ferm target
 ```
 
 # Flash & Debug
+
+Install OpenOCD and GDB-multiarch
+```console
+sudo apt install   gdb-multiarch   openocd 
+```
+
 In a terminal run the following command:
 ```console
 openocd -f openocd.cfg
