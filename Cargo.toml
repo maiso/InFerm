@@ -6,5 +6,18 @@ edition = "2018"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
+[dependencies.arduino_nano33iot]
+version = "0.4.0"
+features = ["usb"]
+
 [dependencies]
-arduino_nano33iot = "0.4.0"
+cortex-m = "0.6"
+
+[dependencies.cortex-m-rt]
+version = "0.6.12"
+
+[dependencies.usb-device]
+version = "0.2"
+
+[dependencies.usbd-serial]
+version = "0.1"
