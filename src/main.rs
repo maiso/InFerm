@@ -14,7 +14,7 @@ mod usb_serial;
 #[entry]
 fn main() -> ! {
     let mut peripherals = Peripherals::take().unwrap();
-    let core = CorePeripherals::take().unwrap();
+    let mut core = CorePeripherals::take().unwrap();
     let mut clocks = GenericClockController::with_internal_32kosc(
         peripherals.GCLK,
         &mut peripherals.PM,
@@ -22,9 +22,18 @@ fn main() -> ! {
         &mut peripherals.NVMCTRL,
     );
     let mut pins = hal::Pins::new(peripherals.PORT);
-    let mut led = pins.led_sck.into_open_drain_output(&mut pins.port);
 
-    usb_serial::usb_serial::usb_serial_start(&mut pins, &mut clocks);
+    usb_serial::usb_serial::init(
+        &mut peripherals.PM,
+        peripherals.USB,
+        &mut core.NVIC,
+        &mut clocks,
+        pins.usb_dm,
+        pins.usb_dp,
+        &mut pins.port,
+    );
+
+    let mut led = pins.led_sck.into_open_drain_output(&mut pins.port);
 
     let mut delay = Delay::new(core.SYST, &mut clocks);
 

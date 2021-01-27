@@ -3,7 +3,9 @@ pub mod usb_serial {
     extern crate arduino_nano33iot as hal;
 
     use hal::clock::GenericClockController;
-    use hal::pac::{interrupt, CorePeripherals, Peripherals};
+    // use hal::pac::{interrupt, CorePeripherals, Peripherals};
+    use hal::gpio::{Floating, Input, Port};
+    use hal::pac::{interrupt, PM, USB };
 
     use hal::usb::UsbBus;
     use usb_device::bus::UsbBusAllocator;
@@ -12,18 +14,28 @@ pub mod usb_serial {
 
     use cortex_m::peripheral::NVIC;
 
-    pub fn usb_serial_start(pins : &mut hal::Pins, mut clocks: &mut GenericClockController) {
-        let mut peripherals = Peripherals::take().unwrap();
-        let mut core = CorePeripherals::take().unwrap();
-
+    /// Initializes the `USBSerial` singleton.
+    ///
+    /// # Arguments
+    ///  * pm_perph: The power management peripheral
+    ///  * usb_perph: The USB peripheral
+    ///  * core: The `CorePeripheral` instance for NVIC modifications
+    ///  * clocks: The clocks instance for USB peripheral clocking
+    ///  * dm: The d- GPIO pad
+    ///  * dp: The d+ GPIO pad
+    ///  * port: the GPIO port
+    pub fn init(
+        pm_perph: &mut PM,
+        usb_perph: USB,
+        nvic: &mut hal::pac::NVIC,
+        clocks: &mut GenericClockController,
+        dm: hal::gpio::Pa24<Input<Floating>>,
+        dp: hal::gpio::Pa25<Input<Floating>>,
+        port: &mut Port,
+    ) {
         let bus_allocator = unsafe {
             USB_ALLOCATOR = Some(hal::usb_allocator(
-                peripherals.USB,
-                &mut clocks,
-                &mut peripherals.PM,
-                pins.usb_dm,
-                pins.usb_dp,
-                &mut pins.port,
+                usb_perph, clocks, pm_perph, dm, dp, port,
             ));
             USB_ALLOCATOR.as_ref().unwrap()
         };
@@ -41,7 +53,7 @@ pub mod usb_serial {
         }
 
         unsafe {
-            core.NVIC.set_priority(interrupt::USB, 1);
+            nvic.set_priority(interrupt::USB, 1);
             NVIC::unmask(interrupt::USB);
         }
     }
@@ -52,7 +64,7 @@ pub mod usb_serial {
             USB_BUS.as_mut().map(|_| {
                 USB_SERIAL.as_mut().map(|serial| {
                     // Skip errors so we can continue the program
-                    let _ = serial.write("log line\r\n".as_bytes());
+                    let _ = serial.write("Hallo Jeroen\r\n".as_bytes());
                 });
             })
         });
