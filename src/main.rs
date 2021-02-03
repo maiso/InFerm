@@ -57,19 +57,22 @@ fn main() -> ! {
     let wifi_delay = |d: core::time::Duration| {
         delay.delay_ms(d.as_millis() as u32);
     };
-    let wifi_transport =
+    let mut wifi_transport =
         Wifi::new(SpiTransport::start(spi, wifi_busy, wifi_reset, wifi_cs, wifi_delay).unwrap());
 
+    let firmware_version = wifi_transport.get_firmware_version().unwrap();
 
     let mut led = pins.led_sck.into_open_drain_output(&mut pins.port);
-
 
     loop {
         delay.delay_ms(255u8);
         led.set_high().unwrap();
         delay.delay_ms(255u8);
         led.set_low().unwrap();
-        usb_serial::usb_serial::usb_serial_log();
+        
+        usb_serial::usb_serial::usb_serial_string("Hallo\r\n".as_bytes());
+
+        usb_serial::usb_serial::usb_serial_log(firmware_version.clone());
     }
 }
 

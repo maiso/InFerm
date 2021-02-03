@@ -234,6 +234,7 @@ name = "in_ferm"
 version = "0.1.0"
 dependencies = [
  "arduino_nano33iot",
+ "arrayvec",
  "cortex-m",
  "cortex-m-rt",
  "usb-device",

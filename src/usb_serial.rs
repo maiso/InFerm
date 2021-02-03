@@ -58,13 +58,25 @@ pub mod usb_serial {
         }
     }
 
-    pub fn usb_serial_log() {
+    pub fn usb_serial_log(data : arrayvec::ArrayVec<[u8; 16]>) {
         // Turn off interrupts so we don't fight with the interrupt
         cortex_m::interrupt::free(|_| unsafe {
             USB_BUS.as_mut().map(|_| {
                 USB_SERIAL.as_mut().map(|serial| {
                     // Skip errors so we can continue the program
-                    let _ = serial.write("Hallo Jeroen\r\n".as_bytes());
+                    let _ = serial.write(data.as_slice());
+                });
+            })
+        });
+    }
+
+    pub fn usb_serial_string(data : &[u8]) {
+        // Turn off interrupts so we don't fight with the interrupt
+        cortex_m::interrupt::free(|_| unsafe {
+            USB_BUS.as_mut().map(|_| {
+                USB_SERIAL.as_mut().map(|serial| {
+                    // Skip errors so we can continue the program
+                    let _ = serial.write(data);
                 });
             })
         });
