@@ -10,7 +10,7 @@ edition = "2018"
 version = "0.4.0"
 git = "https://github.com/maiso/atsamd"
 branch = "arduino_nano_iot_wifi"
-features = ["usb"]
+features = ["usb", "unproven"]
 
 [dependencies]
 cortex-m = "0.6"
