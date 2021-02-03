@@ -8,6 +8,8 @@ edition = "2018"
 
 [dependencies.arduino_nano33iot]
 version = "0.4.0"
+git = "https://github.com/maiso/atsamd"
+branch = "arduino_nano_iot_wifi"
 features = ["usb"]
 
 [dependencies]
@@ -21,3 +23,6 @@ version = "0.2"
 
 [dependencies.usbd-serial]
 version = "0.1"
+
+[dependencies.wifi-nina]
+version  = "0.1.2"
